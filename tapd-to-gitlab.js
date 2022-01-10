@@ -134,7 +134,7 @@
     var createGitLink = function (taskInfo, githubInfo) {
         var { title, link, id, en } = taskInfo;
         var { url, group, project, author } = githubInfo;
-        var gitlabTitle = `feature ${id} ${toHump(en)} ${author} ${timeStr()} ${title}`;
+        var gitlabTitle = `feature ${id} ${en} ${author} ${timeStr()} ${title}`;
         var result = `${url}/${group}/${project}/issues/new?issue[title]=${gitlabTitle}&issue[description]=[${title}](${link})`;
         return encodeURI(result);
     }
