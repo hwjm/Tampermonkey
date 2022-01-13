@@ -121,7 +121,8 @@
     /** 获取任务信息 */
     var getTaskInfo = function (callback) {
         var titleElement = document.getElementById('title-copy-btn-new');
-        var [title, link] = titleElement.dataset.clipboardText.split(' ');
+        var [title, subLink] = titleElement.dataset.clipboardText.split(' https://');
+        var link = 'https://' + subLink;
         var idElement = document.getElementById('copy_id_new');
         var id = idElement.dataset.clipboardText;
         var orginTitle = title.replace('【', '').replace('】', '');
