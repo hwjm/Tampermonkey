@@ -5,6 +5,7 @@
 // @description  try to take over the world!
 // @author       You
 // @match        https://wapi.freshfood.cn/exception/show/team?teamId=*
+// @match        https://wapi.freshfood.cn/exception/show/team/*
 // @grant GM_setValue
 // @grant GM_getValue
 // ==/UserScript==
