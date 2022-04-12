@@ -28,6 +28,18 @@
             group: 'web',
             project: 'csx-wms-app-new',
             author: 'wjm'
+        },
+        {
+            url: 'http://10.252.192.3',
+            group: 'web',
+            project: 'csx-b2b-front-maliang',
+            author: 'wjm'
+        },
+        {
+            url: 'http://10.252.192.3',
+            group: 'web',
+            project: 'csx-maliang-server',
+            author: 'wjm'
         }
     ]
 
@@ -121,7 +133,8 @@
     /** 获取任务信息 */
     var getTaskInfo = function (callback) {
         var titleElement = document.getElementById('title-copy-btn-new');
-        var [title, subLink] = titleElement.dataset.clipboardText.split(' https://');
+        var [title, subLink] = titleElement.dataset.clipboardText.split('https://');
+        title = title.trim();
         var link = 'https://' + subLink;
         var idElement = document.getElementById('copy_id_new');
         var id = idElement.dataset.clipboardText;
@@ -152,17 +165,34 @@
         return li
     }
 
+    /** 创建li复制标签 */
+    var createCopyLiElement = function (title, text) {
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.text = title;
+        a.id = 'copy_id_new';
+        a.href = "javascript:;";
+        a.className = 'clipboard-btn';
+        var atr = document.createAttribute('data-clipboard-text');
+        atr.nodeValue = text;
+        a.setAttributeNode(atr);
+        li.appendChild(a);
+        return li;
+    }
+
     /** 初始化 */
     var init = function () {
         youdaoTrans.init();
         var lastElement = document.getElementById('svn_keyword_new').parentElement;
-
-        getTaskInfo(taskInfo => GITHUBINFOS.forEach(githubInfo => {
-            var { project } = githubInfo;
-            var link = createGitLink(taskInfo, githubInfo);
-            var li = creaetLiElement(`创建议题[${project}]`, link);
-            lastElement.append(li);
-        }));
+        getTaskInfo(taskInfo => {
+            lastElement.append(createCopyLiElement('复制MARKDOWN', `[${taskInfo.title}](${taskInfo.link})`));
+            GITHUBINFOS.forEach(githubInfo => {
+                var { project } = githubInfo;
+                var link = createGitLink(taskInfo, githubInfo);
+                var li = creaetLiElement(`创建议题[${project}]`, link);
+                lastElement.append(li);
+            })
+        });
     }
 
     init();
