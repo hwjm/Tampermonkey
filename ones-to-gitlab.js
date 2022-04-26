@@ -30,13 +30,32 @@
             group: 'web',
             project: 'csx-wms-app-new',
             author: 'wjm'
+        },
+        {
+            url: 'http://10.252.192.3',
+            group: 'web',
+            project: 'csx-b2b-front-maliang',
+            author: 'wjm'
+        },
+        {
+            url: 'http://10.252.192.3',
+            group: 'web',
+            project: 'csx-maliang-server',
+            author: 'wjm'
         }
     ]
+
+    const tranCache = {};
 
     /** 有道翻译 */
     const youdaoTrans = {
         sign: "",
         Execute: function (text, callback) {
+            const cache = tranCache[text];
+            if (cache) {
+                callback(cache)
+                return
+            }
             const h_url = "",
                 h_headers = {},
                 h_data = "";
@@ -57,6 +76,7 @@
                         if (data.errorCode == 0) {
                             const [first] = data.translateResult;
                             const tran = first.reduce((p, c) => (p += c.tgt), "");
+                            tranCache[text] = tran;
                             callback(tran);
                         }
                     }, 300);
@@ -160,6 +180,7 @@
     const createIssueBtn = ()=>{
         if($('.issue-btn').length > 0) return;
         getTaskInfo(taskInfo => {
+            if ($('.issue-btn').length > 0) return;
             const ul = createIssueUl(taskInfo);
             const issueMain = $(`<div style="position:relative; z-index:9"><div class="issue-btn ones-button ones-button-text" style="color: maroon;font-weight: 900;">[ISSUE]</div></div>`);
             issueMain.append(ul);
