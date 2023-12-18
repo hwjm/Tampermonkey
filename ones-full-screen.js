@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         ONES工作台全屏
+// @name         ONES工作台隐藏筛选
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  try to take over the world!
@@ -23,32 +23,50 @@
     var task_list_and_filter = 'body > div.container > div > div > div > section > section > main > div > div.ot-layout-content.ot-layout-content-full.ot-layout-content-space-s.ot-layout-content-bg-white.ot-layout-content-for-app-main-content > div > div > div > div.common_detail_body.TaskList-body > div > div.task-list-and-filter > div:nth-child(1)';
 
     const execTask = (jsPath, task) => {
-        console.log("jsPath: ", $(jsPath))
         $(jsPath).length > 0 ? task() : setTimeout(() => execTask(jsPath, task), 500);
     }
 
     // 添加全屏按钮
     const addFullScreenButton = () => {
         execTask(topbar_center, () => {
+            const status = localStorage.getItem('csx_ones_filter_status') || 'show';
             const button = $('<button>', {
-                text: '全屏',
-                click: changeVisible,
+                text: '',
+                click: clickButton,
+                id: 'csx_ones_filter_button',
                 css: {
                     border: 'none',
                     background: 'none',
                     color: 'blue'
                 }
             });
-            $(topbar_center).after(button)
+            $(topbar_center).after(button);
+            changeVisible(status === 'show')
         })
     }
 
+    // 按钮点击
+    const clickButton = () => {
+        const status = localStorage.getItem('csx_ones_filter_status');
+        const nextStatus = status === 'hiden' ? 'show' : 'hiden';
+        const visible = nextStatus === 'show';
+        changeVisible(visible);
+        localStorage.setItem('csx_ones_filter_status', nextStatus);
+    }
+
     // 显示/隐藏
-    const changeVisible = () => {
-        const list = [$(common_detail_head), $(task_list_top_bar), $(task_list_and_filter)];
-        list.forEach((item) => {
-            item.is(':visible') ? item.hide() : item.show()
+    const changeVisible = (visible) => {
+        execTask(task_list_and_filter, () => {
+            const list = [$(task_list_top_bar), $(task_list_and_filter)];
+
+            list.forEach((item) => {
+                visible ? item.show(): item.hide();
+            });
+
+            const title = visible ? '隐藏筛选': '显示筛选';
+            $('#csx_ones_filter_button').text(title)
         })
+
     }
 
     addFullScreenButton();
